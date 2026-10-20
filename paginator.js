@@ -4245,7 +4245,11 @@ export class Paginator extends HTMLElement {
                 anchor: prev ? () => 1 : () => 0,
             })
         }
-        if (shouldGo || !this.hasAttribute('animated')) await wait(100)
+        // The app's captured-page overlay owns the turn animation. Its instant
+        // navigation is already visually gated by that overlay, so a second
+        // accepted turn must not be discarded by this post-turn delay.
+        if ((shouldGo || !this.hasAttribute('animated'))
+            && !this.hasAttribute('captured-turn-programmatic')) await wait(100)
         this.#locked = false
     }
     async prev(distance) {
